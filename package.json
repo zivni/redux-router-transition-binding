@@ -1,0 +1,29 @@
+{
+  "name": "redux-router-transition-binding",
+  "version": "0.0.1",
+  "description": "Dispatch Redux actions before or after navigation with ability to define a confirmation dialog",
+  "main": "lib/index.js",
+  "typings": "./redux-router-transition-binding.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepublish": "tsc"
+  },
+  "keywords": [
+    "redux",
+    "react-router",
+    "router",
+    "navigation",
+    "transition"
+  ],
+  "author": "Ziv Nitzan (https://github.com/zivni)",
+  "repository": "zivni/redux-router-transition-binding",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^15.x",
+    "react-router-redux": "^4.0.4"
+  },
+  "devDependencies": {
+    "typescript": "^2.0.3"
+  },
+  "dependencies": {}
+}

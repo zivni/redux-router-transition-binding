@@ -1,0 +1,9 @@
+# ignore all
+*
+
+# but...
+!/lib/*
+!package.json
+!redux-router-transition-binding.d.ts
+!readme.md
+!LICENSE.md
