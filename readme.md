@@ -24,6 +24,12 @@ I could do it in the componentDidMount method, but this couples the display logi
 
 So I created this library. and now I can define actions on enter/leave route. and have the business logic where it should be - in the saga.
 
+## Install
+[npm i -S redux-router-transition-binding](https://www.npmjs.com/package/redux-router-transition-binding)
+
+Then import everything: 
+`import { Actions, createMiddleware, ... } from "redux-router-transition-binding"`
+
 ## Dispatching actions on entering route
 ### Step 1: Specify what to dispatch on entering a location
 Create an array of functions that when given a react-router location object returns an array of actions to dispatch when the location match.
@@ -76,12 +82,48 @@ Where:
 * confirmatioPromptText - The text to display when leaving the location. can be string o a function that returns a string based on the state, current location and the location we leave to. return null to avoid displaying the message. If not specified then no confirmation message will displayed. 
 * shouldHandleRouteExit -  A function that should return true if to run actions (and show the confirmation). if not specified it considered true
 
-### Step 2: Register a listener on the history leave event to dispatch the actions.
+### Step 2: register history.getUserConfirmation
+There is a need to override the history default user confirmation dialog for two reasons:
+* We want some nice React component dialog.
+* We want our actions to run only if the user confirms navigation.
+
+You need to use a code like this to create the history object:
+```
+import { createHistory } from "history";
+import { useRouterHistory } from "react-router"
+import {historyGetUserConfirmationConfigFunction} from "redux-router-transition-binding"
+
+export const browserHistory = useRouterHistory(createHistory)({
+    basename: URL_BASE,
+    getUserConfirmation: historyGetUserConfirmationConfigFunction,
+});
+```
+
+Use this history when defining the Router:
+```
+import { Router, Route, IndexRoute } from "react-router"
+import { syncHistoryWithStore } from "react-router-redux"
+import {browserHistory} from "/utils/browserHistoryUtils"
+
+const store = configureStore(...);
+registerRouteExitActionDispatcher(browserHistory, store, routeExitActionCreators); // see below
+const history = syncHistoryWithStore(browserHistory, store)
+
+ <Provider store={store}>
+    <Router history={history}>
+        <Route path="/" component={App}>
+        //...
+        </Route>
+    </Router>
+ </Provider>
+```
+
+### Step 3: Register a listener on the history leave event to dispatch the actions.
 ```
 function registerRouteExitActionDispatcher(history, store, actionCreators: RouteExitActionCreator[]) -> void;
 ```
 Where:
-* history - The history object that react-router uses (the one passed to <Router history=... >. 
+* history - The history object created above. see usage example in the previous step.
 * store - The redux store.
 * actionCreators - the array from step 1.
 
@@ -91,7 +133,7 @@ Where:
 3. Checks if _confirmatioPromptText_ returns a non-nullable string and if so dispatch _SHOW_CONFIRMATION_ACTION_ action with the actions passed in the actions property as the payload.
 4. If the _confirmatioPromptText_ return a null value or it is undefined. dispatch the actions specified in the actions property.
 
-### Step 3: register the routeExitConfirmationReducer 
+### Step 4: register the routeExitConfirmationReducer 
 This step is required if you want to have confirmation on route leave. 
 Make sure the middleware is registered as described above.
 
@@ -117,7 +159,7 @@ interface RouteExitConfirmationState {
 ```
 There is an helper selector method to retrieve this state: `exitConfirmationStateSelector: (state: any) => RouteExitConfirmationState` 
 
-### Step 4 (option a): Add the supplied confirmation dialog
+### Step 5 (option a): Add the supplied confirmation dialog
 There is a simple confirmation dialog supplied with this library. Just add as a child to the top component.
 ```
 import { RouteExitConfirmationDialog } from "redux-router-transition-binding"
@@ -147,11 +189,18 @@ At the minimum the style sheet should be something like:
     color: black;
 }
 ```
-### Step 4 (option b): Or create your own confirmation dialog
+### Step 5 (option b): Or create your own confirmation dialog
 If you want to build your own confirm dialog you can do it easily:
 1. connect your dialog component to the redux state and map the _showConfirmation_ property.
 You can use the supplied  _exitConfirmationStateSelector_ method as noted above.
 2. `import {Actions} from "redux-router-transition-binding"`, and use the _Actions.confirmLeave_ and _Actions.confirmStay_ action creators to dispatch the relevent actions
 
-See the code of _RouteExitConfirmationDialog_ for an example. 
-## License (MIT)
+See the code of _RouteExitConfirmationDialog_ for an example.
+
+## Known Issues
+When using the browser's back command and a confirmation dialog is displayed. Confirming the navigation does not leave the page.
+
+This is because the  the state maintained by _react-router-redux_ is changed to the route we are on.  
+
+##License
+[MIT License](https://raw.githubusercontent.com/zivni/redux-router-transition-binding/master/LICENSE.md)
