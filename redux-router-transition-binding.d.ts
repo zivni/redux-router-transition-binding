@@ -44,8 +44,8 @@ declare module "redux-router-transition-binding" {
         showConfirmation: boolean;
     }
 
-    export function createRouteEnterActionCreator(actionTypes: string[] | string, matchFunction: any): RouteEnterActionCreator;
-    export function createRouteExitActionCreator(actionTypes: string[] | string, matchFunction: any, confirmatioPromptText?: string | ConfirmationTextRule, shouldHandleRouteExit?: ExitLocationRule, showConfirmationPrompt?: ExitLocationRule): RouteExitActionCreator;
+    export function createRouteEnterActionCreator(actionTypes: string[] | string, matchFunction: (path: string) => any): RouteEnterActionCreator;
+    export function createRouteExitActionCreator(actionTypes: string[] | string, matchFunction: (path: string) => any, confirmatioPromptText?: string | ConfirmationTextRule, shouldHandleRouteExit?: ExitLocationRule, showConfirmationPrompt?: ExitLocationRule): RouteExitActionCreator;
 
     export const createMiddleware: (routeEnterActionCreators: RouteEnterActionCreator[]) => ({dispatch, getState}) => (next) => (action: Action) => any;
 
@@ -82,6 +82,4 @@ declare module "redux-router-transition-binding" {
         export const CONFIRM_LEAVE_ROUTE: string;
         export const CONFIRM_STAY_ROUTE: string;
     }
-
-    //= ReduxrouterTransitionBinding;
 }
