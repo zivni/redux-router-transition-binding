@@ -1,6 +1,6 @@
 {
   "name": "redux-router-transition-binding",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Dispatch Redux actions before or after navigation with ability to define a confirmation dialog",
   "main": "lib/index.js",
   "typings": "./redux-router-transition-binding.d.ts",
