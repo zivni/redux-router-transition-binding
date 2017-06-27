@@ -16,7 +16,10 @@ export const createRouteEnterExitActionDispacherMiddleware = (routeEnterActionCr
             const newActions = getActionsForLocation(routeEnterActionCreators, action.payload)
             if (newActions) {
                 const n = next(action);
-                newActions.forEach(a => dispatch(a));
+                newActions.forEach(a => {
+                    a.meta = {...a.meta, location:action.payload};
+                    dispatch(a)
+                });
                 return n;
             }
             break;

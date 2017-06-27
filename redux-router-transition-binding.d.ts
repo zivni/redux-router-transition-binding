@@ -14,6 +14,7 @@ declare module "redux-router-transition-binding" {
     export interface Action {
         type: string;
         payload: any;
+        mata?:any
     }
 
     export type ExitLocationRule = (parms: {

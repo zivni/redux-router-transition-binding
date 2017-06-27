@@ -48,13 +48,15 @@ Pass to `createMiddleware` method the array you created in step 1.
 function createMiddleware(routeEnterActionCreators: RouteEnterActionCreator[]) -> ReduxMiddleware
 ```
 
+Tip: the dispatched actions will contain the original location object in the action's meta property.
+
 ### Helper To create RouteEnterActionCreator 
 You can use the `createRouteEnterActionCreator` helper method to create the array.
 ```
 function createRouteEnterActionCreator(actionTypes: string[] | string, matchFunction: (path: string) => any) -> RouteEnterActionCreator;
 ```
 
-Then you can use [route-parser](https://github.com/rcs/route-parser)as the matchFunction argument
+Then you can use [route-parser](https://github.com/rcs/route-parser) as the matchFunction argument
 
 ## Dispatching actions on exiting route
 ### Step 1: Specify what to dispatch on entering a location
